@@ -5,18 +5,18 @@ local coarseStep = 1
 local fineStep = 0.1
 local microStep = 0.01
 local searchRange = 5
-local checkInterval = 5
+local checkInterval = 3
 local efficiencyDropThresh = 0.3
 local maxReactivity = 100
 local minReactivity = 0
+local precisionMode = false
 
 local currentReactivity = 0
 local bestEfficiency = 0
-local precisionMode = false
 
 local function moveTo(target)
   local delta = target - currentReactivity
-  if math.abs(delta) < 0.001 then return end
+  if math.abs(delta) < 0.0001 then return end
   reactor.adjustReactivity(delta)
   sleep(math.abs(delta))
   currentReactivity = target
@@ -27,7 +27,7 @@ local function probe(target)
   moveTo(target)
   local eff = reactor.getEfficiency()
   moveTo(original)
-  return eff
+  return target, eff
 end
 
 local function localSearch(center, stepSize)
@@ -36,7 +36,7 @@ local function localSearch(center, stepSize)
   for offset = -searchRange, searchRange do
     local test = center + offset * stepSize
     if test >= minReactivity and test <= maxReactivity then
-      local eff = probe(test)
+      local _, eff = probe(test)
       if eff > bestEff then
         bestEff = eff
         bestReactivity = test
@@ -87,16 +87,18 @@ while true do
           end
         end
       end
+
       if not betterFound then
         sleep(checkInterval)
         local newEff = reactor.getEfficiency()
         if newEff + efficiencyDropThresh < bestEfficiency then
-          print("Efficiency drop detected (", newEff, "). Rescanning...")
+          print(string.format("Efficiency drop detected: %.3f -> %.3f", bestEfficiency, newEff))
           local bestReact, bestEff = localSearch(currentReactivity, coarseStep)
           moveTo(bestReact)
-          bestEfficiency = bestEff
+          bestEfficiency = reactor.getEfficiency()
           precisionMode = false
-          print("Recentered to", currentReactivity, "New Efficiency:", bestEfficiency)
+          print(string.format("Recentered to %.2f%% => Efficiency %.3f", currentReactivity, bestEfficiency))
+          sleep(1)
         end
       end
     end
