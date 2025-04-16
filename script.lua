@@ -22,15 +22,22 @@ os.sleep(5)
 while true do
   if reactor.getEfficiency < 90 then
     delta = getDiff(reactor.getEfficiency)
-    if (Reactivity+delta) < 0 or (Reactivity+delta) > 100 then
-      adjust(-1*delta)
-    else if (Reactivity-delta) < 0 or (Reactivity-delta) >1 100 then
-      adjust(delta)
+    temp = Reactivity+delta
+    temp2 = Reactivity-delta
+    local ad;
+    if temp < 0 or temp > 100 then
+      ad = -1*delta
+      adjust(ad)
+    else if temp2 < 0 or temp2 > 100 then
+      ad = delta
+      adjust(ad)
     else
       eff = reactor.getEfficiency
-      adjust(delta)
+      ad = delta
+      adjust(ad)
       if eff > Efficiency then
-        adjust(-2*delta)
+        ad = -2*delta
+        adjust(ad)
       end
     end
   end
