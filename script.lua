@@ -11,7 +11,7 @@ end
 
 function adjust(delta)
   reactor.adjustReactivity(delta)
-  Reactivity+delta
+  Reactivity = Reactivity+delta
   os.sleep(5)
   Efficiency=reactor.getEfficiency
 end
