@@ -13,15 +13,15 @@ function adjust(delta)
   reactor.adjustReactivity(delta)
   Reactivity = Reactivity+delta
   os.sleep(5)
-  Efficiency=reactor.getEfficiency
+  Efficiency=reactor.getEfficiency()
 end
 
 reactor.adjustReactivity(-100)
 os.sleep(5)
 
 while true do
-  if reactor.getEfficiency < 90 then
-    delta = getDiff(reactor.getEfficiency)
+  if reactor.getEfficiency() < 90 then
+    delta = getDiff(reactor.getEfficiency())
     temp = Reactivity + delta
     temp2 = Reactivity - delta
     local ad;
@@ -32,7 +32,7 @@ while true do
       ad = delta
       adjust(ad)
     else
-      eff = reactor.getEfficiency
+      eff = reactor.getEfficiency()
       ad = delta
       adjust(ad)
       if eff > Efficiency then
