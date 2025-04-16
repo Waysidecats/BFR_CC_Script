@@ -5,7 +5,7 @@ local Reactivity = 0
 local Efficiency = 0
 
 function getDiff(eff)
-  x = 100*((22/(eff+10))-0.2)
+  x = 100*((22/( eff + 10))-0.2)
   return x
 end
 
@@ -22,11 +22,11 @@ os.sleep(5)
 while true do
   if reactor.getEfficiency < 90 then
     delta = getDiff(reactor.getEfficiency)
-    temp = Reactivity+delta
-    temp2 = Reactivity-delta
+    temp = Reactivity + delta
+    temp2 = Reactivity - delta
     local ad;
     if temp < 0 or temp > 100 then
-      ad = -1*delta
+      ad = -1 * delta
       adjust(ad)
     else if temp2 < 0 or temp2 > 100 then
       ad = delta
@@ -36,7 +36,7 @@ while true do
       ad = delta
       adjust(ad)
       if eff > Efficiency then
-        ad = -2*delta
+        ad = -2 * delta
         adjust(ad)
       end
     end
